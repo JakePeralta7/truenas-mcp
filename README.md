@@ -5,16 +5,20 @@ MCP server (stdio) for the TrueNAS WebSocket JSON-RPC API. Provides tools for ma
 ## Installation
 
 ```bash
-pip install git+https://github.com/yourusername/truenas-mcp.git
-```
-
-Or with Docker:
-
-```bash
 docker run -i --rm \
   -e TRUENAS_URL=wss://nas.example.com/api/current \
   -e TRUENAS_API_KEY=your-api-key \
-  yourusername/truenas-mcp
+  ghcr.io/jakeperalta7/truenas-mcp:latest
+```
+
+Or build locally:
+
+```bash
+docker build -t truenas-mcp .
+docker run -i --rm \
+  -e TRUENAS_URL=wss://nas.example.com/api/current \
+  -e TRUENAS_API_KEY=your-api-key \
+  truenas-mcp
 ```
 
 ## Configuration
