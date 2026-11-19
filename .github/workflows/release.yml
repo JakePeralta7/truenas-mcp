@@ -33,8 +33,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository_owner }}/truenas-mcp:${{ github.ref_name }}
+            ghcr.io/${{ github.repository_owner }}/truenas-mcp:latest
           platforms: linux/amd64,linux/arm64
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
