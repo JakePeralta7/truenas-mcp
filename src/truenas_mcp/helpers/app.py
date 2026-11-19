@@ -9,6 +9,7 @@ from truenas_mcp.server import READ_ONLY, READ_ONLY_MODE, get_client, logger, mc
 
 # --- App Tools ---
 
+
 def do_list_apps(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
     if filters:
@@ -27,7 +28,7 @@ async def list_apps(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List applications (containers/charts).
-    
+
     Args:
         name: Filter by app name
         state: Filter by app state
@@ -134,7 +135,9 @@ def _register_stop_app():
 
 def _register_restart_app():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "restart_app", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "restart_app", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -145,13 +148,15 @@ def _register_restart_app():
 
 def _register_redeploy_app():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "redeploy_app", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "redeploy_app", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def redeploy_app(name: str, force: bool = False) -> dict[str, Any]:
         """Redeploy an application.
-        
+
         Args:
             name: App name
             force: Force redeploy even if no changes
@@ -167,7 +172,7 @@ def _register_update_app():
     @mcp.tool()
     async def update_app(name: str, **kwargs) -> dict[str, Any]:
         """Update an application configuration.
-        
+
         Args:
             name: App name
             **kwargs: Properties to update
@@ -183,7 +188,7 @@ def _register_delete_app():
     @mcp.tool()
     async def delete_app(name: str, remove_data: bool = False) -> dict[str, Any]:
         """Delete an application.
-        
+
         Args:
             name: App name
             remove_data: Remove associated data (PVCs, etc.)
@@ -192,6 +197,7 @@ def _register_delete_app():
 
 
 # --- App Image Tools ---
+
 
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
@@ -202,13 +208,15 @@ async def app_image_list() -> list[dict[str, Any]]:
 
 def _register_app_image_pull():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "app_image_pull", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "app_image_pull", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def app_image_pull(image: str, tag: str = "latest") -> dict[str, Any]:
         """Pull a docker image.
-        
+
         Args:
             image: Image name (e.g., nginx, linuxserver/plex)
             tag: Image tag
@@ -218,13 +226,15 @@ def _register_app_image_pull():
 
 def _register_app_image_delete():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "app_image_delete", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "app_image_delete", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def app_image_delete(image: str, tag: str | None = None) -> dict[str, Any]:
         """Delete a docker image.
-        
+
         Args:
             image: Image name
             tag: Image tag (optional, deletes all tags if omitted)
@@ -233,6 +243,7 @@ def _register_app_image_delete():
 
 
 # --- App Registry Tools ---
+
 
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
@@ -243,7 +254,9 @@ async def app_registry_list() -> list[dict[str, Any]]:
 
 def _register_app_registry_create():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "app_registry_create", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "app_registry_create", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -254,7 +267,7 @@ def _register_app_registry_create():
         description: str | None = None,
     ) -> dict[str, Any]:
         """Create a container registry configuration.
-        
+
         Args:
             url: Registry URL (e.g., docker.io, ghcr.io)
             username: Username for auth
@@ -273,7 +286,9 @@ def _register_app_registry_create():
 
 def _register_app_registry_delete():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "app_registry_delete", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "app_registry_delete", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -284,6 +299,7 @@ def _register_app_registry_delete():
 
 # --- IX Volume Tools ---
 
+
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
 async def app_ix_volume_query() -> list[dict[str, Any]]:
@@ -293,7 +309,10 @@ async def app_ix_volume_query() -> list[dict[str, Any]]:
 
 def _register_app_ix_volume_create():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "app_ix_volume_create", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "app_ix_volume_create", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
@@ -303,7 +322,7 @@ def _register_app_ix_volume_create():
         description: str | None = None,
     ) -> dict[str, Any]:
         """Create an IX volume for app storage.
-        
+
         Args:
             name: Volume name
             dataset: Parent dataset

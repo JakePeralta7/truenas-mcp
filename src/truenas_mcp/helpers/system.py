@@ -9,6 +9,7 @@ from truenas_mcp.server import READ_ONLY, READ_ONLY_MODE, get_client, logger, mc
 
 # --- System Info Tools ---
 
+
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
 async def system_info() -> dict[str, Any]:
@@ -73,7 +74,7 @@ def _register_reboot():
     @mcp.tool()
     async def reboot(delay: int = 0) -> dict[str, Any]:
         """Reboot the system.
-        
+
         Args:
             delay: Delay in seconds
         """
@@ -88,7 +89,7 @@ def _register_shutdown():
     @mcp.tool()
     async def shutdown(delay: int = 0) -> dict[str, Any]:
         """Shutdown the system.
-        
+
         Args:
             delay: Delay in seconds
         """
@@ -97,13 +98,16 @@ def _register_shutdown():
 
 def _register_update_general():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_system_general", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "update_system_general", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
     async def update_system_general(**kwargs) -> dict[str, Any]:
         """Update general system configuration.
-        
+
         Args:
             **kwargs: Properties to update (hostname, language, timezone, etc.)
         """
@@ -112,7 +116,10 @@ def _register_update_general():
 
 def _register_update_security():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_system_security", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "update_system_security", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
@@ -123,7 +130,9 @@ def _register_update_security():
 
 def _register_create_ntp_server():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_ntp_server", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_ntp_server", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -149,7 +158,9 @@ def _register_create_ntp_server():
 
 def _register_delete_ntp_server():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_ntp_server", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_ntp_server", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -159,6 +170,7 @@ def _register_delete_ntp_server():
 
 
 # --- Disk Tools ---
+
 
 def do_list_disks(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
@@ -178,7 +190,7 @@ async def list_disks(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List physical disks.
-    
+
     Args:
         name: Filter by disk name (e.g., ada0, nvme0)
         serial: Filter by serial number
@@ -206,6 +218,7 @@ async def disk_get_info(name: str) -> dict[str, Any]:
 
 # --- Network Interface Tools ---
 
+
 def do_list_interfaces(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
     if filters:
@@ -224,7 +237,7 @@ async def list_interfaces(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List network interfaces.
-    
+
     Args:
         name: Filter by interface name
         type: Filter by type (PHYSICAL, VLAN, BRIDGE, LAGG, etc.)
@@ -237,6 +250,7 @@ async def list_interfaces(
 
 
 # --- Certificate Tools ---
+
 
 def do_list_certificates(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
@@ -255,7 +269,7 @@ async def list_certificates(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List SSL certificates.
-    
+
     Args:
         name: Filter by certificate name
         limit: Maximum number of results
@@ -296,7 +310,9 @@ async def certificate_extended_key_usage_choices() -> list[dict[str, Any]]:
 
 def _register_create_certificate():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_certificate", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_certificate", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -318,7 +334,7 @@ def _register_create_certificate():
         lifetime: int = 365,
     ) -> dict[str, Any]:
         """Create a certificate or CSR.
-        
+
         Args:
             name: Certificate name
             type: CERTIFICATE or CSR
@@ -364,7 +380,9 @@ def _register_create_certificate():
 
 def _register_delete_certificate():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_certificate", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_certificate", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -375,6 +393,7 @@ def _register_delete_certificate():
 
 # --- IPMI Tools ---
 
+
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
 async def ipmi_is_loaded() -> bool:
@@ -383,6 +402,7 @@ async def ipmi_is_loaded() -> bool:
 
 
 # --- Boot Environment Tools ---
+
 
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
@@ -400,13 +420,16 @@ async def get_boot_environment(name: str) -> dict[str, Any]:
 
 def _register_activate_boot_environment():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "activate_boot_environment", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "activate_boot_environment", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
     async def activate_boot_environment(name: str, reboot: bool = False) -> dict[str, Any]:
         """Activate a boot environment.
-        
+
         Args:
             name: Boot environment name
             reboot: Reboot after activation
@@ -416,13 +439,16 @@ def _register_activate_boot_environment():
 
 def _register_create_boot_environment():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_boot_environment", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "create_boot_environment", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
     async def create_boot_environment(name: str, source: str | None = None) -> dict[str, Any]:
         """Create a boot environment.
-        
+
         Args:
             name: New boot environment name
             source: Source boot environment (optional)

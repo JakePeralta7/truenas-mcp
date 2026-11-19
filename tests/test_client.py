@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from truenas_mcp.client import build_filters, build_options, build_filter_or, build_filter_and
+from truenas_mcp.client import build_filter_and, build_filter_or, build_filters, build_options
 
 
 def test_build_filters():
@@ -12,12 +12,12 @@ def test_build_filters():
         ["name", "=", "test"],
         ["status", "=", "active"],
     ]
-    
+
     # None values excluded
     assert build_filters(name="test", status=None) == [
         ["name", "=", "test"],
     ]
-    
+
     # Empty
     assert build_filters() == []
 
@@ -39,10 +39,11 @@ def test_build_filter_or():
     # Single condition returned as-is
     assert build_filter_or(["name", "=", "a"]) == ["name", "=", "a"]
     # Multiple conditions wrapped in OR
-    assert build_filter_or(
+    assert build_filter_or(["name", "=", "a"], ["name", "=", "b"]) == [
+        "OR",
         ["name", "=", "a"],
-        ["name", "=", "b"]
-    ) == ["OR", ["name", "=", "a"], ["name", "=", "b"]]
+        ["name", "=", "b"],
+    ]
 
 
 def test_build_filter_and():
@@ -51,7 +52,8 @@ def test_build_filter_and():
     # Single condition returned as-is
     assert build_filter_and(["name", "=", "a"]) == ["name", "=", "a"]
     # Multiple conditions wrapped in AND
-    assert build_filter_and(
+    assert build_filter_and(["name", "=", "a"], ["status", "=", "active"]) == [
+        "AND",
         ["name", "=", "a"],
-        ["status", "=", "active"]
-    ) == ["AND", ["name", "=", "a"], ["status", "=", "active"]]
+        ["status", "=", "active"],
+    ]

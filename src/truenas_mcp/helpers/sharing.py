@@ -9,6 +9,7 @@ from truenas_mcp.server import READ_ONLY, READ_ONLY_MODE, get_client, logger, mc
 
 # --- SMB Sharing Tools ---
 
+
 def do_list_smb_shares(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
     if filters:
@@ -27,7 +28,7 @@ async def list_smb_shares(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List SMB shares.
-    
+
     Args:
         name: Filter by share name
         path: Filter by path
@@ -91,7 +92,9 @@ async def smb_get_acl(path: str) -> dict[str, Any]:
 
 def _register_create_smb_share():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_smb_share", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_smb_share", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -124,7 +127,7 @@ def _register_create_smb_share():
         shadow_copy: bool = False,
     ) -> dict[str, Any]:
         """Create an SMB share.
-        
+
         Args:
             name: Share name
             path: Filesystem path
@@ -194,7 +197,9 @@ def _register_create_smb_share():
 
 def _register_update_smb_share():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_smb_share", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_smb_share", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -205,7 +210,9 @@ def _register_update_smb_share():
 
 def _register_delete_smb_share():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_smb_share", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_smb_share", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -216,7 +223,9 @@ def _register_delete_smb_share():
 
 def _register_set_smb_acl():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "set_smb_acl", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "set_smb_acl", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -227,7 +236,9 @@ def _register_set_smb_acl():
 
 def _register_update_smb_config():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_smb_config", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_smb_config", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -237,6 +248,7 @@ def _register_update_smb_config():
 
 
 # --- NFS Sharing Tools ---
+
 
 def do_list_nfs_shares(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
@@ -257,7 +269,7 @@ async def list_nfs_shares(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List NFS shares.
-    
+
     Args:
         id: Filter by share ID
         path: Filter by path (single path)
@@ -293,25 +305,31 @@ async def nfs_config() -> dict[str, Any]:
 
 def _register_create_nfs_share():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_nfs_share", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_nfs_share", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def create_nfs_share(
         paths: list[str],
-        networks: list[str] = ["0.0.0.0/0"],
+        networks: list[str] | None = None,
         comment: str | None = None,
         ro: bool = False,
         maproot_user: str | None = None,
         maproot_group: str | None = None,
         mapall_user: str | None = None,
         mapall_group: str | None = None,
-        security: list[str] = ["sys"],
+        security: list[str] | None = None,
         alldirs: bool = False,
         quiet: bool = False,
     ) -> dict[str, Any]:
+        if networks is None:
+            networks = ["0.0.0.0/0"]
+        if security is None:
+            security = ["sys"]
         """Create an NFS share.
-        
+
         Args:
             paths: List of paths to share
             networks: Allowed networks (CIDR)
@@ -348,7 +366,9 @@ def _register_create_nfs_share():
 
 def _register_update_nfs_share():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_nfs_share", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_nfs_share", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -359,7 +379,9 @@ def _register_update_nfs_share():
 
 def _register_delete_nfs_share():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_nfs_share", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_nfs_share", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -370,7 +392,9 @@ def _register_delete_nfs_share():
 
 def _register_update_nfs_config():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_nfs_config", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_nfs_config", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()

@@ -149,18 +149,30 @@ def truenas_errors(fn: Callable[..., Any]) -> Callable[..., Any]:
     @wraps(fn)
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         cid = set_correlation_id()
-        logger.debug("tool_call_start", extra={"correlation_id": cid, "tool": fn.__name__, "args": _safe_args(args, kwargs)})
+        logger.debug(
+            "tool_call_start",
+            extra={"correlation_id": cid, "tool": fn.__name__, "args": _safe_args(args, kwargs)},
+        )
         try:
             result = await fn(*args, **kwargs)
-            logger.debug("tool_call_end", extra={"correlation_id": cid, "tool": fn.__name__, "success": True})
+            logger.debug(
+                "tool_call_end", extra={"correlation_id": cid, "tool": fn.__name__, "success": True}
+            )
             return result
         except Exception as exc:
             # Import here to avoid circular import
             from truenas_mcp.client import TruenasError
+
             if isinstance(exc, TruenasError):
-                logger.error("tool_call_error", extra={"correlation_id": cid, "tool": fn.__name__, "error": str(exc)})
+                logger.error(
+                    "tool_call_error",
+                    extra={"correlation_id": cid, "tool": fn.__name__, "error": str(exc)},
+                )
                 raise RuntimeError(str(exc)) from exc
-            logger.error("tool_call_error", extra={"correlation_id": cid, "tool": fn.__name__, "error": str(exc)})
+            logger.error(
+                "tool_call_error",
+                extra={"correlation_id": cid, "tool": fn.__name__, "error": str(exc)},
+            )
             raise RuntimeError(str(exc).strip() or exc.__class__.__name__) from exc
 
     return wrapper
@@ -170,12 +182,22 @@ def _safe_args(args: tuple, kwargs: dict) -> dict:
     """Return a safe representation of args for logging (redact sensitive data)."""
     safe = {}
     for i, arg in enumerate(args):
-        if isinstance(arg, str) and ("token" in arg.lower() or "secret" in arg.lower() or "password" in arg.lower() or "key" in arg.lower()):
+        if isinstance(arg, str) and (
+            "token" in arg.lower()
+            or "secret" in arg.lower()
+            or "password" in arg.lower()
+            or "key" in arg.lower()
+        ):
             safe[f"arg_{i}"] = "[REDACTED]"
         else:
             safe[f"arg_{i}"] = str(arg)[:200]
     for k, v in kwargs.items():
-        if "token" in k.lower() or "secret" in k.lower() or "password" in k.lower() or "key" in k.lower():
+        if (
+            "token" in k.lower()
+            or "secret" in k.lower()
+            or "password" in k.lower()
+            or "key" in k.lower()
+        ):
             safe[k] = "[REDACTED]"
         else:
             safe[k] = str(v)[:200]
@@ -203,7 +225,15 @@ def main() -> None:
         handlers=[logging.StreamHandler()],
     )
 
-    logger.info("server_start", extra={"correlation_id": "init", "read_only": READ_ONLY_MODE, "version": _VERSION, "local": settings.local})
+    logger.info(
+        "server_start",
+        extra={
+            "correlation_id": "init",
+            "read_only": READ_ONLY_MODE,
+            "version": _VERSION,
+            "local": settings.local,
+        },
+    )
 
     _client = create_client(settings)
     mcp.run(transport="stdio")

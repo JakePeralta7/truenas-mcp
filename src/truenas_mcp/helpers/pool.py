@@ -9,6 +9,7 @@ from truenas_mcp.server import READ_ONLY, READ_ONLY_MODE, get_client, logger, mc
 
 # --- Pool Tools ---
 
+
 def do_list_pools(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
     if filters:
@@ -27,7 +28,7 @@ async def list_pools(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List storage pools.
-    
+
     Args:
         name: Filter by pool name
         status: Filter by pool status (e.g., HEALTHY, DEGRADED, FAULTED)
@@ -69,7 +70,9 @@ async def pool_status(name: str) -> dict[str, Any]:
 
 def _register_create_pool():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_pool", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_pool", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -80,10 +83,11 @@ def _register_create_pool():
         encryption_options: dict | None = None,
     ) -> dict[str, Any]:
         """Create a new storage pool.
-        
+
         Args:
             name: Pool name
-            topology: Vdev topology dict (e.g., {"data": [{"type": "MIRROR", "disks": ["ada0", "ada1"]}]})
+            topology: Vdev topology dict
+                (e.g., {"data": [{"type": "MIRROR", "disks": ["ada0", "ada1"]}]})
             encryption: Enable encryption
             encryption_options: Encryption options dict
         """
@@ -97,13 +101,15 @@ def _register_create_pool():
 
 def _register_delete_pool():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_pool", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_pool", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def delete_pool(name: str, confirm: bool = False) -> dict[str, Any]:
         """Delete/destroy a storage pool.
-        
+
         Args:
             name: Pool name
             confirm: Must be true to confirm destruction
@@ -115,7 +121,9 @@ def _register_delete_pool():
 
 def _register_import_pool():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "import_pool", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "import_pool", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -125,7 +133,7 @@ def _register_import_pool():
         devices: list[str] | None = None,
     ) -> dict[str, Any]:
         """Import an existing pool.
-        
+
         Args:
             name: Pool name
             guid: Pool GUID (optional)
@@ -141,13 +149,15 @@ def _register_import_pool():
 
 def _register_export_pool():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "export_pool", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "export_pool", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def export_pool(name: str, cascade: bool = False) -> dict[str, Any]:
         """Export a pool.
-        
+
         Args:
             name: Pool name
             cascade: Force export even if datasets are busy
@@ -163,7 +173,7 @@ def _register_pool_scrub():
     @mcp.tool()
     async def pool_scrub(name: str, threshold: int | None = None) -> dict[str, Any]:
         """Start a scrub on a pool.
-        
+
         Args:
             name: Pool name
             threshold: Days since last scrub before starting new one
@@ -176,7 +186,10 @@ def _register_pool_scrub():
 
 # --- Dataset Tools ---
 
-def do_list_datasets(client, pool: str | None = None, filters=None, options=None) -> list[dict[str, Any]]:
+
+def do_list_datasets(
+    client, pool: str | None = None, filters=None, options=None
+) -> list[dict[str, Any]]:
     f = filters or []
     if pool:
         f = f + build_filters(pool=pool)
@@ -198,7 +211,7 @@ async def list_datasets(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List datasets (filesystems, volumes, snapshots).
-    
+
     Args:
         pool: Filter by pool name
         name: Filter by dataset name
@@ -229,7 +242,9 @@ async def get_dataset(name: str) -> dict[str, Any]:
 
 def _register_create_dataset():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_dataset", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_dataset", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -249,7 +264,7 @@ def _register_create_dataset():
         refreservation: str | None = None,
     ) -> dict[str, Any]:
         """Create a new dataset.
-        
+
         Args:
             name: Full dataset name (e.g., "pool/dataset")
             type: FILESYSTEM or VOLUME
@@ -271,16 +286,26 @@ def _register_create_dataset():
             body["volsize"] = volsize
 
         properties = {}
-        if compression: properties["compression"] = compression
-        if atime: properties["atime"] = atime
-        if recordsize: properties["recordsize"] = recordsize
-        if dedup: properties["dedup"] = dedup
-        if copies: properties["copies"] = copies
-        if sync: properties["sync"] = sync
-        if quota: properties["quota"] = quota
-        if refquota: properties["refquota"] = refquota
-        if reservation: properties["reservation"] = reservation
-        if refreservation: properties["refreservation"] = refreservation
+        if compression:
+            properties["compression"] = compression
+        if atime:
+            properties["atime"] = atime
+        if recordsize:
+            properties["recordsize"] = recordsize
+        if dedup:
+            properties["dedup"] = dedup
+        if copies:
+            properties["copies"] = copies
+        if sync:
+            properties["sync"] = sync
+        if quota:
+            properties["quota"] = quota
+        if refquota:
+            properties["refquota"] = refquota
+        if reservation:
+            properties["reservation"] = reservation
+        if refreservation:
+            properties["refreservation"] = refreservation
 
         if properties:
             body["properties"] = properties
@@ -290,13 +315,17 @@ def _register_create_dataset():
 
 def _register_delete_dataset():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_dataset", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_dataset", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
-    async def delete_dataset(name: str, force: bool = False, recursive: bool = False) -> dict[str, Any]:
+    async def delete_dataset(
+        name: str, force: bool = False, recursive: bool = False
+    ) -> dict[str, Any]:
         """Delete a dataset.
-        
+
         Args:
             name: Full dataset name
             force: Force unmount
@@ -307,7 +336,9 @@ def _register_delete_dataset():
 
 def _register_update_dataset():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_dataset", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_dataset", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -316,7 +347,7 @@ def _register_update_dataset():
         properties: dict[str, Any],
     ) -> dict[str, Any]:
         """Update dataset properties.
-        
+
         Args:
             name: Full dataset name
             properties: Dict of properties to update (compression, atime, etc.)
@@ -326,7 +357,10 @@ def _register_update_dataset():
 
 # --- Snapshot Tools ---
 
-def do_list_snapshots(client, dataset: str | None = None, filters=None, options=None) -> list[dict[str, Any]]:
+
+def do_list_snapshots(
+    client, dataset: str | None = None, filters=None, options=None
+) -> list[dict[str, Any]]:
     f = filters or []
     if dataset:
         f = f + build_filters(dataset=dataset)
@@ -347,7 +381,7 @@ async def list_snapshots(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List ZFS snapshots.
-    
+
     Args:
         dataset: Filter by parent dataset
         name: Filter by snapshot name
@@ -361,7 +395,9 @@ async def list_snapshots(
 
 def _register_create_snapshot():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_snapshot", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_snapshot", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -373,7 +409,7 @@ def _register_create_snapshot():
         vmware_sync: bool = False,
     ) -> dict[str, Any]:
         """Create a ZFS snapshot.
-        
+
         Args:
             dataset: Parent dataset name
             name: Snapshot name
@@ -391,13 +427,15 @@ def _register_create_snapshot():
 
 def _register_delete_snapshot():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_snapshot", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_snapshot", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def delete_snapshot(name: str, force: bool = False) -> dict[str, Any]:
         """Delete a ZFS snapshot.
-        
+
         Args:
             name: Full snapshot name (e.g., "pool/dataset@snapshot")
             force: Force deletion
@@ -407,13 +445,15 @@ def _register_delete_snapshot():
 
 def _register_rollback_snapshot():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "rollback_snapshot", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "rollback_snapshot", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def rollback_snapshot(name: str) -> dict[str, Any]:
         """Rollback dataset to a snapshot.
-        
+
         Args:
             name: Full snapshot name
         """
@@ -421,6 +461,7 @@ def _register_rollback_snapshot():
 
 
 # --- Snapshot Task Tools ---
+
 
 def do_list_snapshot_tasks(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
@@ -440,7 +481,7 @@ async def list_snapshot_tasks(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List periodic snapshot tasks.
-    
+
     Args:
         pool: Filter by pool
         enabled: Filter by enabled status
@@ -454,7 +495,10 @@ async def list_snapshot_tasks(
 
 def _register_create_snapshot_task():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_snapshot_task", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "create_snapshot_task", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
@@ -462,14 +506,15 @@ def _register_create_snapshot_task():
         dataset: str,
         recursive: bool = True,
         exclude: list[str] | None = None,
-        schedule: dict | None = None,  # {"minute": "0", "hour": "0", "dom": "*", "month": "*", "dow": "*"}
+        schedule: dict
+        | None = None,  # {"minute": "0", "hour": "0", "dom": "*", "month": "*", "dow": "*"}
         naming_schema: str | None = None,  # e.g., "auto-%Y-%m-%d_%H-%M"
         lifetime: str | None = None,  # e.g., "1w", "30d"
         enabled: bool = True,
         vmware_sync: bool = False,
     ) -> dict[str, Any]:
         """Create a periodic snapshot task.
-        
+
         Args:
             dataset: Dataset to snapshot
             recursive: Include child datasets
@@ -499,7 +544,10 @@ def _register_create_snapshot_task():
 
 def _register_delete_snapshot_task():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_snapshot_task", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "delete_snapshot_task", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
@@ -509,6 +557,7 @@ def _register_delete_snapshot_task():
 
 
 # --- Scrub Tools ---
+
 
 def do_list_scrubs(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
@@ -527,7 +576,7 @@ async def list_scrubs(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List scrub tasks/status.
-    
+
     Args:
         pool: Filter by pool
         limit: Maximum number of results
@@ -555,7 +604,9 @@ async def get_scrub(pool: str) -> dict[str, Any]:
 
 def _register_create_scrub():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_scrub", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_scrub", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -566,7 +617,7 @@ def _register_create_scrub():
         enabled: bool = True,
     ) -> dict[str, Any]:
         """Create a scheduled scrub task.
-        
+
         Args:
             pool: Pool name
             threshold: Days between scrubs
@@ -587,7 +638,7 @@ def _register_run_scrub():
     @mcp.tool()
     async def run_scrub(pool: str, threshold: int | None = None) -> dict[str, Any]:
         """Manually start a scrub on a pool.
-        
+
         Args:
             pool: Pool name
             threshold: Override threshold for this run

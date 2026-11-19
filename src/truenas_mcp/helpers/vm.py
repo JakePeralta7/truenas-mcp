@@ -9,6 +9,7 @@ from truenas_mcp.server import READ_ONLY, READ_ONLY_MODE, get_client, logger, mc
 
 # --- VM Tools ---
 
+
 def do_list_vms(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
     if filters:
@@ -27,7 +28,7 @@ async def list_vms(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List virtual machines.
-    
+
     Args:
         name: Filter by VM name
         status: Filter by VM status
@@ -136,7 +137,7 @@ def _register_stop_vm():
     @mcp.tool()
     async def stop_vm(name: str, force: bool = False) -> dict[str, Any]:
         """Stop a virtual machine.
-        
+
         Args:
             name: VM name
             force: Force power off
@@ -152,7 +153,7 @@ def _register_restart_vm():
     @mcp.tool()
     async def restart_vm(name: str, force: bool = False) -> dict[str, Any]:
         """Restart a virtual machine.
-        
+
         Args:
             name: VM name
             force: Force restart
@@ -162,7 +163,9 @@ def _register_restart_vm():
 
 def _register_poweroff_vm():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "poweroff_vm", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "poweroff_vm", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -213,7 +216,7 @@ def _register_create_vm():
         devices: list[dict] | None = None,
     ) -> dict[str, Any]:
         """Create a new virtual machine.
-        
+
         Args:
             name: VM name
             description: Description
@@ -253,7 +256,7 @@ def _register_delete_vm():
     @mcp.tool()
     async def delete_vm(name: str, force: bool = False) -> dict[str, Any]:
         """Delete a virtual machine.
-        
+
         Args:
             name: VM name
             force: Force deletion
@@ -269,7 +272,7 @@ def _register_update_vm():
     @mcp.tool()
     async def update_vm(name: str, **kwargs) -> dict[str, Any]:
         """Update a virtual machine configuration.
-        
+
         Args:
             name: VM name
             **kwargs: Properties to update (vcpus, memory, bootloader, etc.)
@@ -285,7 +288,7 @@ def _register_clone_vm():
     @mcp.tool()
     async def clone_vm(name: str, new_name: str, description: str | None = None) -> dict[str, Any]:
         """Clone a virtual machine.
-        
+
         Args:
             name: Source VM name
             new_name: New VM name
@@ -299,13 +302,15 @@ def _register_clone_vm():
 
 def _register_vm_device_create():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "vm_device_create", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "vm_device_create", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def vm_device_create(vm: str, dtype: str, attributes: dict) -> dict[str, Any]:
         """Add a device to a VM.
-        
+
         Args:
             vm: VM name
             dtype: Device type (DISK, NIC, CDROM, etc.)
@@ -317,7 +322,9 @@ def _register_vm_device_create():
 
 def _register_vm_device_delete():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "vm_device_delete", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "vm_device_delete", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -328,7 +335,9 @@ def _register_vm_device_delete():
 
 def _register_vm_device_update():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "vm_device_update", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "vm_device_update", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()

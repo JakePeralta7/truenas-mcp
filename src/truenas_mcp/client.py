@@ -14,6 +14,7 @@ from pytruenas import TrueNASClient
 
 class TruenasError(Exception):
     """Wrapper for TrueNAS errors to avoid importing pytruenas in server.py."""
+
     pass
 
 
@@ -75,7 +76,7 @@ def create_client(settings) -> TruenasClientWrapper:
 
 def build_filters(**kwargs: Any) -> list[list]:
     """Convert keyword args to TrueNAS filter format.
-    
+
     Example:
         build_filters(name="mypool", status="HEALTHY")
         -> [["name", "=", "mypool"], ["status", "=", "HEALTHY"]]
@@ -113,7 +114,7 @@ def build_filter_or(
     *conditions: list[list],
 ) -> list:
     """Build an OR filter from multiple conditions.
-    
+
     Example:
         build_filter_or(
             ["name", "=", "pool1"],

@@ -8,11 +8,12 @@ from truenas_mcp.server import READ_ONLY, READ_ONLY_MODE, get_client, logger, mc
 
 # --- Filesystem Tools ---
 
+
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
 async def list_directory(path: str, options: dict | None = None) -> list[dict[str, Any]]:
     """List directory contents.
-    
+
     Args:
         path: Directory path (e.g., /mnt/pool/dataset)
         options: Additional options (e.g., {"follow_symlinks": true})
@@ -24,7 +25,7 @@ async def list_directory(path: str, options: dict | None = None) -> list[dict[st
 @truenas_errors
 async def read_file(path: str, options: dict | None = None) -> str:
     """Read file contents.
-    
+
     Args:
         path: File path
         options: Additional options
@@ -38,9 +39,11 @@ def _register_write_file():
         return
 
     @mcp.tool()
-    async def write_file(path: str, data: str, mode: str = "w", options: dict | None = None) -> dict[str, Any]:
+    async def write_file(
+        path: str, data: str, mode: str = "w", options: dict | None = None
+    ) -> dict[str, Any]:
         """Write file contents.
-        
+
         Args:
             path: File path
             data: File content
@@ -61,7 +64,7 @@ def _register_mkdir():
     @mcp.tool()
     async def mkdir(path: str, mode: int = 0o755, parents: bool = True) -> dict[str, Any]:
         """Create a directory.
-        
+
         Args:
             path: Directory path
             mode: Permissions mode (octal)
@@ -78,7 +81,7 @@ def _register_chown():
     @mcp.tool()
     async def chown(path: str, uid: int | None = None, gid: int | None = None) -> dict[str, Any]:
         """Change file/directory ownership.
-        
+
         Args:
             path: File/directory path
             uid: New UID (optional)
@@ -94,19 +97,23 @@ def _register_chown():
 
 def _register_set_permissions():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "set_permissions", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "set_permissions", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def set_permissions(path: str, mode: int, recursive: bool = False) -> dict[str, Any]:
         """Set file/directory permissions.
-        
+
         Args:
             path: File/directory path
             mode: Permissions mode (octal, e.g., 0o755)
             recursive: Apply recursively
         """
-        return await get_client().api.filesystem.setperm(path, {"mode": mode, "recursive": recursive})
+        return await get_client().api.filesystem.setperm(
+            path, {"mode": mode, "recursive": recursive}
+        )
 
 
 def _register_get_acl():
@@ -117,7 +124,7 @@ def _register_get_acl():
     @mcp.tool()
     async def get_acl(path: str, options: dict | None = None) -> dict[str, Any]:
         """Get ACL for a file/directory.
-        
+
         Args:
             path: File/directory path
             options: Additional options
@@ -133,7 +140,7 @@ def _register_set_acl():
     @mcp.tool()
     async def set_acl(path: str, acl: list[dict], options: dict | None = None) -> dict[str, Any]:
         """Set ACL for a file/directory.
-        
+
         Args:
             path: File/directory path
             acl: ACL entries list
@@ -154,7 +161,7 @@ def _register_stat():
     @truenas_errors
     async def stat(path: str, options: dict | None = None) -> dict[str, Any]:
         """Get file/directory status.
-        
+
         Args:
             path: File/directory path
             options: Additional options
@@ -163,6 +170,7 @@ def _register_stat():
 
 
 # --- ACL Template Tools ---
+
 
 @mcp.tool(annotations=READ_ONLY)
 @truenas_errors
@@ -187,7 +195,9 @@ async def get_acl_template_by_path(path: str) -> dict[str, Any]:
 
 def _register_create_acl_template():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_acl_template", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_acl_template", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -197,7 +207,7 @@ def _register_create_acl_template():
         description: str | None = None,
     ) -> dict[str, Any]:
         """Create an ACL template.
-        
+
         Args:
             name: Template name
             acl: ACL entries
@@ -211,11 +221,15 @@ def _register_create_acl_template():
 
 def _register_update_acl_template():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_acl_template", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_acl_template", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
-    async def update_acl_template(name: str, acl: list[dict], description: str | None = None) -> dict[str, Any]:
+    async def update_acl_template(
+        name: str, acl: list[dict], description: str | None = None
+    ) -> dict[str, Any]:
         """Update an ACL template."""
         body: dict[str, Any] = {"acl": acl}
         if description:
@@ -225,7 +239,9 @@ def _register_update_acl_template():
 
 def _register_delete_acl_template():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_acl_template", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_acl_template", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()

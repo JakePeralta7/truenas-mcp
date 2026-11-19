@@ -9,6 +9,7 @@ from truenas_mcp.server import READ_ONLY, READ_ONLY_MODE, get_client, logger, mc
 
 # --- User Tools ---
 
+
 def do_list_users(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
     if filters:
@@ -29,7 +30,7 @@ async def list_users(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List users.
-    
+
     Args:
         username: Filter by username
         uid: Filter by UID
@@ -81,7 +82,9 @@ async def has_local_administrator_set_up() -> bool:
 
 def _register_create_user():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_user", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_user", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -101,7 +104,7 @@ def _register_create_user():
         groups: list[str] | None = None,
     ) -> dict[str, Any]:
         """Create a new user.
-        
+
         Args:
             username: Username
             full_name: Full name
@@ -143,13 +146,15 @@ def _register_create_user():
 
 def _register_update_user():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_user", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_user", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def update_user(username: str, **kwargs) -> dict[str, Any]:
         """Update a user.
-        
+
         Args:
             username: Username
             **kwargs: Properties to update (full_name, email, shell, etc.)
@@ -159,13 +164,15 @@ def _register_update_user():
 
 def _register_delete_user():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_user", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_user", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def delete_user(username: str, remove_home: bool = False) -> dict[str, Any]:
         """Delete a user.
-        
+
         Args:
             username: Username
             remove_home: Remove home directory
@@ -175,7 +182,9 @@ def _register_delete_user():
 
 def _register_set_password():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "set_user_password", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "set_user_password", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -186,7 +195,10 @@ def _register_set_password():
 
 def _register_renew_2fa_secret():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "renew_user_2fa_secret", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "renew_user_2fa_secret", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
@@ -197,7 +209,10 @@ def _register_renew_2fa_secret():
 
 def _register_unset_2fa_secret():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "unset_user_2fa_secret", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool",
+            extra={"tool": "unset_user_2fa_secret", "reason": "read_only_mode"},
+        )
         return
 
     @mcp.tool()
@@ -207,6 +222,7 @@ def _register_unset_2fa_secret():
 
 
 # --- Group Tools ---
+
 
 def do_list_groups(client, filters=None, options=None) -> list[dict[str, Any]]:
     kwargs = {}
@@ -227,7 +243,7 @@ async def list_groups(
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
     """List groups.
-    
+
     Args:
         name: Filter by group name
         gid: Filter by GID
@@ -271,7 +287,9 @@ async def group_has_password_enabled_user(name: str) -> bool:
 
 def _register_create_group():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "create_group", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "create_group", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
@@ -282,7 +300,7 @@ def _register_create_group():
         users: list[str] | None = None,
     ) -> dict[str, Any]:
         """Create a new group.
-        
+
         Args:
             name: Group name
             gid: Specific GID (optional)
@@ -299,13 +317,15 @@ def _register_create_group():
 
 def _register_update_group():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "update_group", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "update_group", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
     async def update_group(name: str, **kwargs) -> dict[str, Any]:
         """Update a group.
-        
+
         Args:
             name: Group name
             **kwargs: Properties to update (gid, sudo, users)
@@ -315,7 +335,9 @@ def _register_update_group():
 
 def _register_delete_group():
     if READ_ONLY_MODE:
-        logger.info("skipping_write_tool", extra={"tool": "delete_group", "reason": "read_only_mode"})
+        logger.info(
+            "skipping_write_tool", extra={"tool": "delete_group", "reason": "read_only_mode"}
+        )
         return
 
     @mcp.tool()
