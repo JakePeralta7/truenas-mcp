@@ -206,7 +206,7 @@ def do_list_datasets(
 async def list_datasets(
     pool: str | None = None,
     name: str | None = None,
-    type: str | None = None,  # filesystem, volume, snapshot
+    type: str | None = None,  # filesystem, volume, snapshot (case-insensitive)
     limit: int | None = None,
     offset: int | None = None,
 ) -> list[dict[str, Any]]:
@@ -215,11 +215,13 @@ async def list_datasets(
     Args:
         pool: Filter by pool name
         name: Filter by dataset name
-        type: Filter by type (filesystem, volume, snapshot)
+        type: Filter by type (filesystem, volume, snapshot) - case-insensitive
         limit: Maximum number of results
         offset: Number of results to skip
     """
-    filters = build_filters(name=name, type=type)
+    # TrueNAS expects uppercase type values
+    type_upper = type.upper() if type else None
+    filters = build_filters(name=name, type=type_upper)
     options = build_options(limit=limit, offset=offset)
     return do_list_datasets(get_client(), pool, filters or None, options or None)
 
@@ -361,14 +363,13 @@ def _register_update_dataset():
 def do_list_snapshots(
     client, dataset: str | None = None, filters=None, options=None
 ) -> list[dict[str, Any]]:
-    f = filters or []
-    if dataset:
-        f = f + build_filters(dataset=dataset)
     kwargs = {}
-    if f:
-        kwargs["filters"] = f
+    if filters:
+        kwargs["filters"] = filters
     if options:
         kwargs["options"] = options
+    if dataset:
+        kwargs["dataset"] = dataset
     return client.api.pool.dataset.snapshot_query(**kwargs)
 
 
@@ -383,8 +384,8 @@ async def list_snapshots(
     """List ZFS snapshots.
 
     Args:
-        dataset: Filter by parent dataset
-        name: Filter by snapshot name
+        dataset: Filter by parent dataset (e.g., "pool/dataset")
+        name: Filter by snapshot name (short name, e.g., "auto-2024-01-01")
         limit: Maximum number of results
         offset: Number of results to skip
     """
@@ -483,12 +484,13 @@ async def list_snapshot_tasks(
     """List periodic snapshot tasks.
 
     Args:
-        pool: Filter by pool
+        pool: Filter by pool name (e.g., "tank")
         enabled: Filter by enabled status
         limit: Maximum number of results
         offset: Number of results to skip
     """
-    filters = build_filters(pool=pool, enabled=enabled)
+    # TrueNAS snapshot task API uses 'dataset' field for pool filtering
+    filters = build_filters(dataset=pool, enabled=enabled)
     options = build_options(limit=limit, offset=offset)
     return do_list_snapshot_tasks(get_client(), filters or None, options or None)
 
