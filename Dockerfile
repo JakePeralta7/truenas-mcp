@@ -31,8 +31,4 @@ RUN chown -R truenas:truenas /app
 
 USER truenas
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import truenas_mcp; print('OK')" || exit 1
-
 ENTRYPOINT ["truenas-mcp"]
